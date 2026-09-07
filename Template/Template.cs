@@ -2,7 +2,7 @@ using UnityEngine;
 using Uinity;
 
 [ExecuteAlways]
-public class Home : MonoBehaviour
+public class Template : MonoBehaviour
 {
     private void OnEnable()
     {
