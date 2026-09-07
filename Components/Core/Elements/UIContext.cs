@@ -128,5 +128,32 @@ namespace Uinity
                 image.color = color;
             }
         }
+
+        public static void ApplyClip(
+            GameObject obj,
+            Radius radius = default,
+            bool hasColor = false)
+        {
+            bool hasRadius = radius.HasValue && (radius.IsFull || radius.TopLeft > 0f || radius.TopRight > 0f || radius.BottomRight > 0f || radius.BottomLeft > 0f);
+
+            if (hasRadius)
+            {
+                if (!hasColor)
+                {
+                    AddImage(obj, Color.clear, radius);
+                }
+                Mask mask = obj.AddComponent<Mask>();
+                mask.showMaskGraphic = hasColor;
+            }
+            else if (hasColor)
+            {
+                Mask mask = obj.AddComponent<Mask>();
+                mask.showMaskGraphic = true;
+            }
+            else
+            {
+                obj.AddComponent<RectMask2D>();
+            }
+        }
     }
 }

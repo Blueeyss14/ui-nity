@@ -11,6 +11,7 @@ namespace Uinity
         private readonly Alignment _alignment;
         private readonly UIElement _child;
         private readonly Radius _radius;
+        private readonly bool _clip;
 
         public Container(
             Color? color = null,
@@ -18,7 +19,8 @@ namespace Uinity
             Height height = default,
             Alignment alignment = Alignment.TopLeft,
             UIElement child = null,
-            Radius radius = default)
+            Radius radius = default,
+            bool clip = false)
         {
             _color = color;
             _width = width;
@@ -26,6 +28,7 @@ namespace Uinity
             _alignment = alignment;
             _child = child;
             _radius = radius;
+            _clip = clip;
         }
 
         public override GameObject Build(Transform parent)
@@ -75,6 +78,15 @@ namespace Uinity
                     obj,
                     _color.Value,
                     _radius
+                );
+            }
+
+            if (_clip)
+            {
+                UIContext.ApplyClip(
+                    obj,
+                    _radius,
+                    _color.HasValue
                 );
             }
 

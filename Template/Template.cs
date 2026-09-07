@@ -25,7 +25,8 @@ public class Template : MonoBehaviour
             child: new Vertical(
                 new UIElement[]{
                 new Container(
-                radius: new SetRadiusOnly(topLeft: 20, bottomRight: 100),
+                clip: true,
+                radius: new SetRadiusOnly(topLeft: 20, bottomRight: 100, bottomLeft: 50),
                 color: Color.green,
                 width: 400,
                 height: 200,
@@ -35,12 +36,12 @@ public class Template : MonoBehaviour
                         new Vertical(
                             new UIElement[] {
                                 new Container(
-                                    // color: Color.yellow,
+                                    color: Color.yellow,
                                     width: 100,
                                     height: 100
                                 ),
                                 new Container(
-                                    // color: Color.blue,
+                                    color: Color.blue,
                                     width: 100,
                                     height: 100
                                 )
