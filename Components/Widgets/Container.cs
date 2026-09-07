@@ -10,19 +10,22 @@ namespace Uinity
         private readonly Height _height;
         private readonly Alignment _alignment;
         private readonly UIElement _child;
+        private readonly Radius _radius;
 
         public Container(
             Color? color = null,
             Width width = default,
             Height height = default,
             Alignment alignment = Alignment.TopLeft,
-            UIElement child = null)
+            UIElement child = null,
+            Radius radius = default)
         {
             _color = color;
             _width = width;
             _height = height;
             _alignment = alignment;
             _child = child;
+            _radius = radius;
         }
 
         public override GameObject Build(Transform parent)
@@ -39,14 +42,6 @@ namespace Uinity
 
             LayoutElement layoutElement =
                 obj.AddComponent<LayoutElement>();
-
-            if (_color.HasValue)
-            {
-                UIContext.AddImage(
-                    obj,
-                    _color.Value
-                );
-            }
 
             if (_width.IsFull)
             {
@@ -72,6 +67,15 @@ namespace Uinity
                 layoutElement.preferredHeight = _height.Value;
                 layoutElement.minHeight = _height.Value;
                 layoutElement.flexibleHeight = 0f;
+            }
+
+            if (_color.HasValue)
+            {
+                UIContext.AddImage(
+                    obj,
+                    _color.Value,
+                    _radius
+                );
             }
 
             if (_child != null)

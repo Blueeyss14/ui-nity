@@ -22,7 +22,10 @@ public class Template : MonoBehaviour
             color: Color.red,
             width: Width.Full,
             height: Height.Full,
-            child: new Container(
+            child: new Vertical(
+                new UIElement[]{
+                new Container(
+                radius: new SetRadiusOnly(topLeft: 20, bottomRight: 100),
                 color: Color.green,
                 width: 400,
                 height: 200,
@@ -32,12 +35,12 @@ public class Template : MonoBehaviour
                         new Vertical(
                             new UIElement[] {
                                 new Container(
-                                    color: Color.yellow,
+                                    // color: Color.yellow,
                                     width: 100,
                                     height: 100
                                 ),
                                 new Container(
-                                    color: Color.blue,
+                                    // color: Color.blue,
                                     width: 100,
                                     height: 100
                                 )
@@ -65,6 +68,32 @@ public class Template : MonoBehaviour
                         
                     }
                 )
+            ),
+             new Container(
+                radius: new SetRadiusX(0, 20),
+                                    color: Color.yellow,
+                                    width: 200,
+                                    height: 100
+                                ),
+             new Container(
+                radius: new SetRadiusY(30, 0),
+                                    color: Color.blue,
+                                    width: 200,
+                                    height: 100
+                                ),
+             new Container(
+                radius: new Radius(Radius.full),
+                                    color: Color.blue,
+                                    width: 100,
+                                    height: 100
+                                ),
+             new Container(
+                radius: new Radius(20),
+                                    color: Color.yellow,
+                                    width: 100,
+                                    height: 100
+                                )
+                }
             )
         ).Build(transform);
     }

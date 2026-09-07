@@ -11,7 +11,8 @@ namespace Uinity
         {
             GameObject obj = new GameObject(
                 name,
-                typeof(RectTransform)
+                typeof(RectTransform),
+                typeof(CanvasRenderer)
             );
 
             obj.transform.SetParent(parent, false);
@@ -112,10 +113,20 @@ namespace Uinity
 
         public static void AddImage(
             GameObject obj,
-            Color color)
+            Color color,
+            Radius radius = default)
         {
-            Image image = obj.AddComponent<Image>();
-            image.color = color;
+            if (radius.HasValue && (radius.IsFull || radius.TopLeft > 0f || radius.TopRight > 0f || radius.BottomRight > 0f || radius.BottomLeft > 0f))
+            {
+                UIRoundedRectangle graphic = obj.AddComponent<UIRoundedRectangle>();
+                graphic.color = color;
+                graphic.radius = radius;
+            }
+            else
+            {
+                Image image = obj.AddComponent<Image>();
+                image.color = color;
+            }
         }
     }
 }
