@@ -5,11 +5,18 @@ namespace Uinity
 {
     public class Vertical : UIElement
     {
+        private readonly float _gap;
         private readonly UIElement[] _children;
 
         public Vertical(params UIElement[] children)
+            : this(0f, children)
         {
-            _children = children;
+        }
+
+        public Vertical(float gap, params UIElement[] children)
+        {
+            _gap = gap;
+            _children = children ?? System.Array.Empty<UIElement>();
         }
 
         public override GameObject Build(
@@ -48,7 +55,7 @@ namespace Uinity
             layout.childForceExpandWidth = false;
             layout.childForceExpandHeight = false;
 
-            layout.spacing = 0f;
+            layout.spacing = _gap;
 
             foreach (UIElement child in _children)
             {
@@ -56,6 +63,14 @@ namespace Uinity
                 {
                     child.Build(obj.transform);
                 }
+            }
+
+            if (_gap > 0f)
+            {
+                UILayoutGapAdapter adapter = obj.AddComponent<UILayoutGapAdapter>();
+                adapter.targetGap = _gap;
+                adapter.isVertical = true;
+                adapter.UpdateSpacing();
             }
 
             return obj;

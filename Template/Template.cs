@@ -20,9 +20,10 @@ public class Template : MonoBehaviour
         new Container(
             alignment: Alignment.Center,
             color: Color.red,
-            width: Width.Full,
-            height: Height.Full,
+            width: Width.full,
+            height: Height.full,
             child: new Vertical(
+                gap: 80,
                 new UIElement[]{
                 new Container(
                 clip: true,
@@ -66,7 +67,7 @@ public class Template : MonoBehaviour
                             }
                         ),
 
-                        
+
                     }
                 )
             ),
@@ -93,7 +94,31 @@ public class Template : MonoBehaviour
                                     color: Color.yellow,
                                     width: 100,
                                     height: 100
-                                )
+                                ),
+             new Container(
+                radius: new Radius(20),
+                                    color: Color.blue,
+                                    width: Width.screen / 2,
+                                    height: 100
+                                ),
+            new Horizontal(
+                gap: 1000,
+                new UIElement[]
+                {
+                    new Container(
+                radius: new Radius(20),
+                                    color: Color.green,
+                                    width: Width.screen / 3,
+                                    height: 100
+                                ),
+                    new Container(
+                radius: new Radius(20),
+                                    color: Color.green,
+                                    width: Width.screen / 3,
+                                    height: 100
+                                ),
+                }
+            )
                 }
             )
         ).Build(transform);

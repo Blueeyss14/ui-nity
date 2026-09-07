@@ -5,11 +5,18 @@ namespace Uinity
 {
     public class Horizontal : UIElement
     {
+        private readonly float _gap;
         private readonly UIElement[] _children;
 
         public Horizontal(params UIElement[] children)
+            : this(0f, children)
         {
-            _children = children;
+        }
+
+        public Horizontal(float gap, params UIElement[] children)
+        {
+            _gap = gap;
+            _children = children ?? System.Array.Empty<UIElement>();
         }
 
         public override GameObject Build(
@@ -48,7 +55,7 @@ namespace Uinity
             layout.childForceExpandWidth = false;
             layout.childForceExpandHeight = false;
 
-            layout.spacing = 0f;
+            layout.spacing = _gap;
 
             ContentSizeFitter fitter =
                 obj.AddComponent<ContentSizeFitter>();
@@ -69,6 +76,14 @@ namespace Uinity
                 {
                     child.Build(obj.transform);
                 }
+            }
+
+            if (_gap > 0f)
+            {
+                UILayoutGapAdapter adapter = obj.AddComponent<UILayoutGapAdapter>();
+                adapter.targetGap = _gap;
+                adapter.isVertical = false;
+                adapter.UpdateSpacing();
             }
 
             return obj;
