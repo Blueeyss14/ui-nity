@@ -6,16 +6,41 @@ namespace Uinity
     public class Horizontal : UIElement
     {
         private readonly float _gap;
+        private readonly Padding _padding;
         private readonly UIElement[] _children;
 
         public Horizontal(params UIElement[] children)
-            : this(0f, children)
         {
+            _gap = 0f;
+            _padding = default;
+            _children = children ?? System.Array.Empty<UIElement>();
         }
 
         public Horizontal(float gap, params UIElement[] children)
         {
             _gap = gap;
+            _padding = default;
+            _children = children ?? System.Array.Empty<UIElement>();
+        }
+
+        public Horizontal(Padding padding, params UIElement[] children)
+        {
+            _gap = 0f;
+            _padding = padding;
+            _children = children ?? System.Array.Empty<UIElement>();
+        }
+
+        public Horizontal(float gap, Padding padding, params UIElement[] children)
+        {
+            _gap = gap;
+            _padding = padding;
+            _children = children ?? System.Array.Empty<UIElement>();
+        }
+
+        public Horizontal(Padding padding, float gap, params UIElement[] children)
+        {
+            _gap = gap;
+            _padding = padding;
             _children = children ?? System.Array.Empty<UIElement>();
         }
 
@@ -56,6 +81,16 @@ namespace Uinity
             layout.childForceExpandHeight = false;
 
             layout.spacing = _gap;
+
+            if (_padding.HasValue)
+            {
+                layout.padding = new RectOffset(
+                    Mathf.RoundToInt(_padding.Left),
+                    Mathf.RoundToInt(_padding.Right),
+                    Mathf.RoundToInt(_padding.Top),
+                    Mathf.RoundToInt(_padding.Bottom)
+                );
+            }
 
             ContentSizeFitter fitter =
                 obj.AddComponent<ContentSizeFitter>();

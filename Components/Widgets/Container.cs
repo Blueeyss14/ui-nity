@@ -12,6 +12,8 @@ namespace Uinity
         private readonly UIElement _child;
         private readonly Radius _radius;
         private readonly bool _clip;
+        private readonly Padding _padding;
+        private readonly Margin _margin;
 
         public Container(
             Color? color = null,
@@ -20,7 +22,9 @@ namespace Uinity
             Alignment alignment = Alignment.TopLeft,
             UIElement child = null,
             Radius radius = default,
-            bool clip = false)
+            bool clip = false,
+            Padding padding = default,
+            Margin margin = default)
         {
             _color = color;
             _width = width;
@@ -29,53 +33,108 @@ namespace Uinity
             _child = child;
             _radius = radius;
             _clip = clip;
+            _padding = padding;
+            _margin = margin;
         }
 
         public override GameObject Build(Transform parent)
         {
-            GameObject obj = UIContext.CreateObject(
-                "Container",
-                parent
-            );
+            GameObject containerObj;
+            RectTransform containerRect;
+            LayoutElement layoutElement;
 
-            RectTransform rect =
-                UIContext.GetRect(obj);
-
-            ApplyDefaults(rect);
-
-            LayoutElement layoutElement =
-                obj.AddComponent<LayoutElement>();
-
-            if (_width.IsFull)
+            if (_margin.HasValue)
             {
-                ApplyWidth(rect);
-                layoutElement.flexibleWidth = 1f;
+                GameObject marginObj = UIContext.CreateObject(
+                    "ContainerMargin",
+                    parent
+                );
+                RectTransform marginRect = UIContext.GetRect(marginObj);
+                ApplyDefaults(marginRect);
+
+                layoutElement = marginObj.AddComponent<LayoutElement>();
+
+                float totalMarginX = _margin.Left + _margin.Right;
+                float totalMarginY = _margin.Top + _margin.Bottom;
+
+                if (_width.IsFull)
+                {
+                    ApplyWidth(marginRect);
+                    layoutElement.flexibleWidth = 1f;
+                }
+                else if (_width.Value > 0)
+                {
+                    ApplyWidth(marginRect, totalMarginX);
+                    layoutElement.preferredWidth = _width.Value + totalMarginX;
+                    layoutElement.minWidth = _width.Value + totalMarginX;
+                    layoutElement.flexibleWidth = 0f;
+                }
+
+                if (_height.IsFull)
+                {
+                    ApplyHeight(marginRect);
+                    layoutElement.flexibleHeight = 1f;
+                }
+                else if (_height.Value > 0)
+                {
+                    ApplyHeight(marginRect, totalMarginY);
+                    layoutElement.preferredHeight = _height.Value + totalMarginY;
+                    layoutElement.minHeight = _height.Value + totalMarginY;
+                    layoutElement.flexibleHeight = 0f;
+                }
+
+                containerObj = UIContext.CreateObject(
+                    "Container",
+                    marginObj.transform
+                );
+                containerRect = UIContext.GetRect(containerObj);
+                containerRect.anchorMin = Vector2.zero;
+                containerRect.anchorMax = Vector2.one;
+                containerRect.offsetMin = new Vector2(_margin.Left, _margin.Bottom);
+                containerRect.offsetMax = new Vector2(-_margin.Right, -_margin.Top);
             }
-            else if (_width.Value > 0)
+            else
             {
-                ApplyWidth(rect);
-                layoutElement.preferredWidth = _width.Value;
-                layoutElement.minWidth = _width.Value;
-                layoutElement.flexibleWidth = 0f;
-            }
+                containerObj = UIContext.CreateObject(
+                    "Container",
+                    parent
+                );
+                containerRect = UIContext.GetRect(containerObj);
+                ApplyDefaults(containerRect);
 
-            if (_height.IsFull)
-            {
-                ApplyHeight(rect);
-                layoutElement.flexibleHeight = 1f;
-            }
-            else if (_height.Value > 0)
-            {
-                ApplyHeight(rect);
-                layoutElement.preferredHeight = _height.Value;
-                layoutElement.minHeight = _height.Value;
-                layoutElement.flexibleHeight = 0f;
+                layoutElement = containerObj.AddComponent<LayoutElement>();
+
+                if (_width.IsFull)
+                {
+                    ApplyWidth(containerRect);
+                    layoutElement.flexibleWidth = 1f;
+                }
+                else if (_width.Value > 0)
+                {
+                    ApplyWidth(containerRect);
+                    layoutElement.preferredWidth = _width.Value;
+                    layoutElement.minWidth = _width.Value;
+                    layoutElement.flexibleWidth = 0f;
+                }
+
+                if (_height.IsFull)
+                {
+                    ApplyHeight(containerRect);
+                    layoutElement.flexibleHeight = 1f;
+                }
+                else if (_height.Value > 0)
+                {
+                    ApplyHeight(containerRect);
+                    layoutElement.preferredHeight = _height.Value;
+                    layoutElement.minHeight = _height.Value;
+                    layoutElement.flexibleHeight = 0f;
+                }
             }
 
             if (_color.HasValue)
             {
                 UIContext.AddImage(
-                    obj,
+                    containerObj,
                     _color.Value,
                     _radius
                 );
@@ -84,7 +143,7 @@ namespace Uinity
             if (_clip)
             {
                 UIContext.ApplyClip(
-                    obj,
+                    containerObj,
                     _radius,
                     _color.HasValue
                 );
@@ -93,15 +152,29 @@ namespace Uinity
             if (_child != null)
             {
                 GameObject child =
-                    _child.Build(obj.transform);
+                    _child.Build(containerObj.transform);
 
                 RectTransform childRect =
                     child.GetComponent<RectTransform>();
 
                 ApplyChildAlignment(childRect);
+
+                bool isAutoWidth = !_width.IsFull && _width.Value <= 0f;
+                bool isAutoHeight = !_height.IsFull && _height.Value <= 0f;
+
+                if (isAutoWidth || isAutoHeight)
+                {
+                    UIAutoContainerSize autoSize = containerObj.AddComponent<UIAutoContainerSize>();
+                    autoSize.autoWidth = isAutoWidth;
+                    autoSize.autoHeight = isAutoHeight;
+                    autoSize.padding = _padding;
+                    autoSize.margin = _margin;
+                    autoSize.marginObj = _margin.HasValue ? containerObj.transform.parent.gameObject : null;
+                    autoSize.UpdateSize();
+                }
             }
 
-            return obj;
+            return _margin.HasValue ? containerObj.transform.parent.gameObject : containerObj;
         }
 
         private void ApplyDefaults(RectTransform rect)
@@ -113,7 +186,7 @@ namespace Uinity
             rect.offsetMax = Vector2.zero;
         }
 
-        private void ApplyWidth(RectTransform rect)
+        private void ApplyWidth(RectTransform rect, float extraSize = 0f)
         {
             if (_width.IsFull)
             {
@@ -130,12 +203,12 @@ namespace Uinity
             {
                 rect.SetSizeWithCurrentAnchors(
                     RectTransform.Axis.Horizontal,
-                    _width.Value
+                    _width.Value + extraSize
                 );
             }
         }
 
-        private void ApplyHeight(RectTransform rect)
+        private void ApplyHeight(RectTransform rect, float extraSize = 0f)
         {
             if (_height.IsFull)
             {
@@ -163,7 +236,7 @@ namespace Uinity
             {
                 rect.SetSizeWithCurrentAnchors(
                     RectTransform.Axis.Vertical,
-                    _height.Value
+                    _height.Value + extraSize
                 );
             }
         }
@@ -187,26 +260,53 @@ namespace Uinity
             child.anchorMax = new Vector2(maxX, maxY);
             child.pivot = anchor;
 
+            float padLeft = _padding.Left;
+            float padRight = _padding.Right;
+            float padTop = _padding.Top;
+            float padBottom = _padding.Bottom;
+
             if (isStretchX && isStretchY)
             {
-                child.offsetMin = Vector2.zero;
-                child.offsetMax = Vector2.zero;
+                child.offsetMin = new Vector2(padLeft, padBottom);
+                child.offsetMax = new Vector2(-padRight, -padTop);
             }
             else if (isStretchX)
             {
-                child.offsetMin = new Vector2(0f, child.offsetMin.y);
-                child.offsetMax = new Vector2(0f, child.offsetMax.y);
-                child.anchoredPosition = new Vector2(0f, child.anchoredPosition.y);
+                child.offsetMin = new Vector2(padLeft, child.offsetMin.y);
+                child.offsetMax = new Vector2(-padRight, child.offsetMax.y);
+
+                float yOffset = 0f;
+                if (anchor.y == 1f) yOffset = -padTop;
+                else if (anchor.y == 0f) yOffset = padBottom;
+                else yOffset = (padBottom - padTop) * 0.5f;
+
+                child.anchoredPosition = new Vector2(0f, yOffset);
             }
             else if (isStretchY)
             {
-                child.offsetMin = new Vector2(child.offsetMin.x, 0f);
-                child.offsetMax = new Vector2(child.offsetMax.x, 0f);
-                child.anchoredPosition = new Vector2(child.anchoredPosition.x, 0f);
+                child.offsetMin = new Vector2(child.offsetMin.x, padBottom);
+                child.offsetMax = new Vector2(child.offsetMax.x, -padTop);
+
+                float xOffset = 0f;
+                if (anchor.x == 0f) xOffset = padLeft;
+                else if (anchor.x == 1f) xOffset = -padRight;
+                else xOffset = (padLeft - padRight) * 0.5f;
+
+                child.anchoredPosition = new Vector2(xOffset, 0f);
             }
             else
             {
-                child.anchoredPosition = Vector2.zero;
+                float xOffset = 0f;
+                if (anchor.x == 0f) xOffset = padLeft;
+                else if (anchor.x == 1f) xOffset = -padRight;
+                else xOffset = (padLeft - padRight) * 0.5f;
+
+                float yOffset = 0f;
+                if (anchor.y == 1f) yOffset = -padTop;
+                else if (anchor.y == 0f) yOffset = padBottom;
+                else yOffset = (padBottom - padTop) * 0.5f;
+
+                child.anchoredPosition = new Vector2(xOffset, yOffset);
             }
         }
 

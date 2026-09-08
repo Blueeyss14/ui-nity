@@ -1,5 +1,6 @@
 using UnityEngine;
 using Uinity;
+using System.Security.Cryptography;
 
 [ExecuteAlways]
 public class Template : MonoBehaviour
@@ -24,17 +25,21 @@ public class Template : MonoBehaviour
             height: Height.full,
             child: new Vertical(
                 gap: 80,
+
                 new UIElement[]{
                 new Container(
+                // padding: new SetPadding(10),
+                margin: new SetMargin(20),
                 clip: true,
                 radius: new SetRadiusOnly(topLeft: 20, bottomRight: 100, bottomLeft: 50),
                 color: Color.green,
-                width: 400,
-                height: 200,
+                // width: 400,
+                // height: 200,
                 child: new Horizontal(
                     new UIElement[]
                     {
                         new Vertical(
+                            padding: new SetPadding(0),
                             new UIElement[] {
                                 new Container(
                                     color: Color.yellow,
@@ -47,10 +52,6 @@ public class Template : MonoBehaviour
                                     height: 100
                                 )
                             }
-                        ),
-                        new Container(
-                            width: 100,
-                            height: 200
                         ),
                         new Vertical(
                             new UIElement[] {
@@ -102,10 +103,10 @@ public class Template : MonoBehaviour
                                     height: 100
                                 ),
             new Horizontal(
-                gap: 1000,
                 new UIElement[]
                 {
                     new Container(
+                    margin: new SetMarginX(40),
                 radius: new Radius(20),
                                     color: Color.green,
                                     width: Width.screen / 3,

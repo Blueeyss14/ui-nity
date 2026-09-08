@@ -77,7 +77,15 @@ namespace Uinity
                 parentSize = isVertical ? Screen.height : Screen.width;
             }
 
-            float availableSpace = parentSize - totalChildrenSize;
+            float padSize = 0f;
+            if (_layoutGroup.padding != null)
+            {
+                padSize = isVertical
+                    ? (_layoutGroup.padding.top + _layoutGroup.padding.bottom)
+                    : (_layoutGroup.padding.left + _layoutGroup.padding.right);
+            }
+
+            float availableSpace = parentSize - totalChildrenSize - padSize;
             float maxGap = availableSpace > 0f ? availableSpace / (childCount - 1) : 0f;
 
             _layoutGroup.spacing = Mathf.Clamp(targetGap, 0f, maxGap);
