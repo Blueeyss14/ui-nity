@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -5,10 +6,39 @@ namespace Uinity
 {
     public static class UIContext
     {
+        public static readonly Dictionary<string, Sprite> SpriteCache = new Dictionary<string, Sprite>();
+
+        public static void PreserveSprites(Transform parent)
+        {
+            if (parent == null) return;
+            foreach (Transform child in parent)
+            {
+                UnityEngine.UI.Image img = child.GetComponent<UnityEngine.UI.Image>();
+                if (img != null && img.sprite != null)
+                {
+                    SpriteCache[child.name] = img.sprite;
+                }
+                PreserveSprites(child);
+            }
+        }
+
         public static GameObject CreateObject(
             string name,
             Transform parent)
         {
+            if (parent != null)
+            {
+                Transform existingChild = parent.Find(name);
+                if (existingChild != null)
+                {
+                    UnityEngine.UI.Image existingImg = existingChild.GetComponent<UnityEngine.UI.Image>();
+                    if (existingImg != null && existingImg.sprite != null)
+                    {
+                        SpriteCache[name] = existingImg.sprite;
+                    }
+                }
+            }
+
             GameObject obj = new GameObject(
                 name,
                 typeof(RectTransform),
@@ -124,7 +154,7 @@ namespace Uinity
             }
             else
             {
-                Image image = obj.AddComponent<Image>();
+                UnityEngine.UI.Image image = obj.AddComponent<UnityEngine.UI.Image>();
                 image.color = color;
             }
         }

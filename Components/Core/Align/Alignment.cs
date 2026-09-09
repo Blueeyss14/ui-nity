@@ -2,16 +2,28 @@ namespace Uinity
 {
     public enum Alignment
     {
-        TopLeft,
-        TopCenter,
-        TopRight,
+        topLeft,
+        topCenter,
+        topRight,
 
-        CenterLeft,
-        Center,
-        CenterRight,
+        centerLeft,
+        center,
+        centerRight,
 
-        BottomLeft,
-        BottomCenter,
-        BottomRight
+        bottomLeft,
+        bottomCenter,
+        bottomRight,
+
+        TopLeft = topLeft,
+        TopCenter = topCenter,
+        TopRight = topRight,
+
+        CenterLeft = centerLeft,
+        Center = center,
+        CenterRight = centerRight,
+
+        BottomLeft = bottomLeft,
+        BottomCenter = bottomCenter,
+        BottomRight = bottomRight
     }
 }

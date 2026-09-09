@@ -7,6 +7,8 @@ using UnityEditor;
 [ExecuteAlways]
 public class Template : MonoBehaviour
 {
+    [SerializeField] private Sprite sampleSprite;
+
     private Vector2 _lastScreenSize;
     private bool _isRebuildPending;
 
@@ -157,10 +159,16 @@ public class Template : MonoBehaviour
                                     height: 100
                                 ),
                     new Container(
+                        alignment: Alignment.center,
                 radius: new Radius(20),
                                     color: Color.green,
                                     width: Width.screen / 3,
-                                    height: 100
+                                    height: 100,
+                                    child: new Image(
+                                        name: "Image Name",
+                                        sprite: sampleSprite,
+                                        fit: Image.contain
+                                    )
                                 ),
                 }
             )
