@@ -20,19 +20,25 @@ namespace Uinity
         {
             get
             {
-                float h = Screen.height;
+                float h = 0f;
 #if UNITY_EDITOR
-                if (!Application.isPlaying || h <= 0)
+                if (!Application.isPlaying)
                 {
-                    if (h <= 0)
+                    Vector2 gameViewSize = UnityEditor.Handles.GetMainGameViewSize();
+                    if (gameViewSize.y > 0f)
                     {
-                        var sceneView = UnityEditor.SceneView.lastActiveSceneView;
-                        h = (sceneView != null && sceneView.position.height > 0) ? sceneView.position.height : 1080f;
+                        h = gameViewSize.y;
                     }
                 }
-#else
-                if (h <= 0) h = 1080f;
 #endif
+                if (h <= 0f)
+                {
+                    h = Screen.height;
+                }
+                if (h <= 0f)
+                {
+                    h = 1080f;
+                }
                 return new Height(h, false);
             }
         }

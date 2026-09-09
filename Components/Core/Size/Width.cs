@@ -20,19 +20,25 @@ namespace Uinity
         {
             get
             {
-                float w = Screen.width;
+                float w = 0f;
 #if UNITY_EDITOR
-                if (!Application.isPlaying || w <= 0)
+                if (!Application.isPlaying)
                 {
-                    if (w <= 0)
+                    Vector2 gameViewSize = UnityEditor.Handles.GetMainGameViewSize();
+                    if (gameViewSize.x > 0f)
                     {
-                        var sceneView = UnityEditor.SceneView.lastActiveSceneView;
-                        w = (sceneView != null && sceneView.position.width > 0) ? sceneView.position.width : 1920f;
+                        w = gameViewSize.x;
                     }
                 }
-#else
-                if (w <= 0) w = 1920f;
 #endif
+                if (w <= 0f)
+                {
+                    w = Screen.width;
+                }
+                if (w <= 0f)
+                {
+                    w = 1920f;
+                }
                 return new Width(w, false);
             }
         }
