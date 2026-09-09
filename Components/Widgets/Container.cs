@@ -244,6 +244,12 @@ namespace Uinity
         private void ApplyChildAlignment(
             RectTransform child)
         {
+            TMPro.TextMeshProUGUI tmp = child.GetComponent<TMPro.TextMeshProUGUI>();
+            if (tmp != null && child.GetComponent<TextExplicitAlignMarker>() == null)
+            {
+                Text.ApplyAlignment(tmp, _alignment);
+            }
+
             Vector2 anchor =
                 GetAnchor(_alignment);
 

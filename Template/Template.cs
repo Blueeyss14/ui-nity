@@ -93,11 +93,21 @@ public static class Template
                 new UIElement[]
                 {
                     new Container(
+                        alignment: Alignment.center,
                     margin: new SetMarginX(40),
                 radius: new Radius(20),
                                     color: Color.green,
                                     width: Width.screen / 3,
-                                    height: 100
+                                    height: 100,
+                                    child: new Text("This is a text",
+                                    size: 50f,
+                                    weight: FontWeight.bold,
+                                    border: new TextBorder(
+                                        thickness: 2f,
+                                        Color: Color.black
+                                    )
+
+                                    )
                                 ),
                     new Container(
                         alignment: Alignment.center,
