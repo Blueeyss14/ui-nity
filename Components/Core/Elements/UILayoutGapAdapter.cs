@@ -74,7 +74,9 @@ namespace Uinity
             float parentSize = isVertical ? _rectTransform.rect.height : _rectTransform.rect.width;
             if (parentSize <= 0f)
             {
-                parentSize = isVertical ? Screen.height : Screen.width;
+                parentSize = isVertical
+                    ? (Screen.height > 0 ? Screen.height : 1080f)
+                    : (Screen.width > 0 ? Screen.width : 1920f);
             }
 
             float padSize = 0f;

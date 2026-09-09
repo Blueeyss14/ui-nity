@@ -1,21 +1,65 @@
 using UnityEngine;
 using Uinity;
-using System.Security.Cryptography;
+#if UNITY_EDITOR
+using UnityEditor;
+#endif
 
 [ExecuteAlways]
 public class Template : MonoBehaviour
 {
+    private Vector2 _lastScreenSize;
+    private bool _isRebuildPending;
+
     private void OnEnable()
     {
-        Rebuild();
+        CheckAndRebuild(force: true);
     }
 
     private void OnValidate()
     {
-        Rebuild();
+        CheckAndRebuild(force: true);
+    }
+
+    private void Update()
+    {
+        CheckAndRebuild(force: false);
+    }
+
+    private void OnRectTransformDimensionsChange()
+    {
+        CheckAndRebuild(force: false);
+    }
+
+    private void CheckAndRebuild(bool force = false)
+    {
+        Vector2 currentScreenSize = new Vector2(Width.screen.Value, Height.screen.Value);
+        if (force || currentScreenSize != _lastScreenSize)
+        {
+            _lastScreenSize = currentScreenSize;
+            Rebuild();
+        }
     }
 
     private void Rebuild()
+    {
+#if UNITY_EDITOR
+        if (!Application.isPlaying)
+        {
+            if (_isRebuildPending) return;
+            _isRebuildPending = true;
+            EditorApplication.delayCall += () =>
+            {
+                _isRebuildPending = false;
+                if (this == null) return;
+                DoRebuild();
+            };
+            return;
+        }
+#endif
+        DoRebuild();
+    }
+
+    private void DoRebuild()
     {
         Clear();
         new Container(

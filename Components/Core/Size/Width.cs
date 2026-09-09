@@ -16,7 +16,26 @@ namespace Uinity
         public static Width full => new Width(0f, true);
         public static Width Full => full;
 
-        public static Width screen => new Width(Screen.width, false);
+        public static Width screen
+        {
+            get
+            {
+                float w = Screen.width;
+#if UNITY_EDITOR
+                if (!Application.isPlaying || w <= 0)
+                {
+                    if (w <= 0)
+                    {
+                        var sceneView = UnityEditor.SceneView.lastActiveSceneView;
+                        w = (sceneView != null && sceneView.position.width > 0) ? sceneView.position.width : 1920f;
+                    }
+                }
+#else
+                if (w <= 0) w = 1920f;
+#endif
+                return new Width(w, false);
+            }
+        }
 
         public static implicit operator Width(float value)
         {

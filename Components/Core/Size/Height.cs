@@ -16,7 +16,26 @@ namespace Uinity
         public static Height full => new Height(0f, true);
         public static Height Full => full;
 
-        public static Height screen => new Height(Screen.height, false);
+        public static Height screen
+        {
+            get
+            {
+                float h = Screen.height;
+#if UNITY_EDITOR
+                if (!Application.isPlaying || h <= 0)
+                {
+                    if (h <= 0)
+                    {
+                        var sceneView = UnityEditor.SceneView.lastActiveSceneView;
+                        h = (sceneView != null && sceneView.position.height > 0) ? sceneView.position.height : 1080f;
+                    }
+                }
+#else
+                if (h <= 0) h = 1080f;
+#endif
+                return new Height(h, false);
+            }
+        }
 
         public static implicit operator Height(float value)
         {
