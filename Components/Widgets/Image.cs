@@ -51,7 +51,7 @@ namespace Uinity
             Height height = default)
         {
             _name = string.IsNullOrEmpty(name) ? "Image" : name;
-            _sprite = sprite != null ? sprite : (!string.IsNullOrEmpty(path) ? Resources.Load<Sprite>(path) : null);
+            _sprite = sprite != null ? sprite : LoadSprite(path);
             _fit = fit;
             _texture = texture;
             _color = color;
@@ -94,6 +94,11 @@ namespace Uinity
                 layoutElement.minWidth = _width.Value;
                 layoutElement.flexibleWidth = 0f;
             }
+            else
+            {
+                layoutElement.preferredWidth = 0f;
+                layoutElement.flexibleWidth = 1f;
+            }
 
             if (_height.IsFull)
             {
@@ -107,6 +112,11 @@ namespace Uinity
                 layoutElement.preferredHeight = _height.Value;
                 layoutElement.minHeight = _height.Value;
                 layoutElement.flexibleHeight = 0f;
+            }
+            else
+            {
+                layoutElement.preferredHeight = 0f;
+                layoutElement.flexibleHeight = 1f;
             }
 
             UnityEngine.UI.Image uiImage = obj.AddComponent<UnityEngine.UI.Image>();
@@ -140,6 +150,33 @@ namespace Uinity
             ApplyFit(obj, uiImage, targetSprite, _fit);
 
             return obj;
+        }
+
+        public static Sprite LoadSprite(string path)
+        {
+            if (string.IsNullOrEmpty(path)) return null;
+
+            Sprite s = Resources.Load<Sprite>(path);
+            if (s != null) return s;
+
+#if UNITY_EDITOR
+            string cleanPath = path.Replace("\\", "/");
+
+            s = UnityEditor.AssetDatabase.LoadAssetAtPath<Sprite>(cleanPath);
+            if (s != null) return s;
+
+            if (!cleanPath.EndsWith(".png", System.StringComparison.OrdinalIgnoreCase) &&
+                !cleanPath.EndsWith(".jpg", System.StringComparison.OrdinalIgnoreCase) &&
+                !cleanPath.EndsWith(".jpeg", System.StringComparison.OrdinalIgnoreCase))
+            {
+                s = UnityEditor.AssetDatabase.LoadAssetAtPath<Sprite>(cleanPath + ".png");
+                if (s != null) return s;
+
+                s = UnityEditor.AssetDatabase.LoadAssetAtPath<Sprite>(cleanPath + ".jpg");
+                if (s != null) return s;
+            }
+#endif
+            return null;
         }
 
         private void ApplyFit(GameObject obj, UnityEngine.UI.Image uiImage, Sprite sprite, ImageFit fit)

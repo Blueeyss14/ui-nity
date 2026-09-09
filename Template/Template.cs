@@ -1,71 +1,12 @@
 using UnityEngine;
 using Uinity;
-#if UNITY_EDITOR
-using UnityEditor;
-#endif
 
-[ExecuteAlways]
-public class Template : MonoBehaviour
+public static class Template
 {
-    [SerializeField] private Sprite sampleSprite;
-
-    private Vector2 _lastScreenSize;
-    private bool _isRebuildPending;
-
-    private void OnEnable()
+    public static UIElement Build()
     {
-        CheckAndRebuild(force: true);
-    }
-
-    private void OnValidate()
-    {
-        CheckAndRebuild(force: true);
-    }
-
-    private void Update()
-    {
-        CheckAndRebuild(force: false);
-    }
-
-    private void OnRectTransformDimensionsChange()
-    {
-        CheckAndRebuild(force: false);
-    }
-
-    private void CheckAndRebuild(bool force = false)
-    {
-        Vector2 currentScreenSize = new Vector2(Width.screen.Value, Height.screen.Value);
-        if (force || currentScreenSize != _lastScreenSize)
-        {
-            _lastScreenSize = currentScreenSize;
-            Rebuild();
-        }
-    }
-
-    private void Rebuild()
-    {
-#if UNITY_EDITOR
-        if (!Application.isPlaying)
-        {
-            if (_isRebuildPending) return;
-            _isRebuildPending = true;
-            EditorApplication.delayCall += () =>
-            {
-                _isRebuildPending = false;
-                if (this == null) return;
-                DoRebuild();
-            };
-            return;
-        }
-#endif
-        DoRebuild();
-    }
-
-    private void DoRebuild()
-    {
-        Clear();
-        new Container(
-            alignment: Alignment.Center,
+        return new Container(
+            alignment: Alignment.center,
             color: Color.red,
             width: Width.full,
             height: Height.full,
@@ -166,7 +107,7 @@ public class Template : MonoBehaviour
                                     height: 100,
                                     child: new Image(
                                         name: "Image Name",
-                                        sprite: sampleSprite,
+                                        path: "Assets/Sprites/Hotkeys",
                                         fit: Image.contain
                                     )
                                 ),
@@ -174,28 +115,6 @@ public class Template : MonoBehaviour
             )
                 }
             )
-        ).Build(transform);
-    }
-
-    private void Clear()
-    {
-        for (int i = transform.childCount - 1; i >= 0; i--)
-        {
-            GameObject child =
-                transform.GetChild(i).gameObject;
-
-#if UNITY_EDITOR
-            if (!Application.isPlaying)
-            {
-                DestroyImmediate(child);
-            }
-            else
-            {
-                Destroy(child);
-            }
-#else
-            Destroy(child);
-#endif
-        }
+        );
     }
 }
