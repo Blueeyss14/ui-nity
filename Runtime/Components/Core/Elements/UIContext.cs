@@ -172,17 +172,33 @@ namespace Uinity
                 {
                     AddImage(obj, Color.clear, radius);
                 }
-                Mask mask = obj.AddComponent<Mask>();
+                UIRoundedRectangle graphic = obj.GetComponent<UIRoundedRectangle>();
+                if (graphic != null)
+                {
+                    graphic.antiAliasWidth = 0f;
+                }
+                Mask mask = obj.GetComponent<Mask>();
+                if (mask == null)
+                {
+                    mask = obj.AddComponent<Mask>();
+                }
                 mask.showMaskGraphic = hasColor;
             }
             else if (hasColor)
             {
-                Mask mask = obj.AddComponent<Mask>();
+                Mask mask = obj.GetComponent<Mask>();
+                if (mask == null)
+                {
+                    mask = obj.AddComponent<Mask>();
+                }
                 mask.showMaskGraphic = true;
             }
             else
             {
-                obj.AddComponent<RectMask2D>();
+                if (obj.GetComponent<RectMask2D>() == null)
+                {
+                    obj.AddComponent<RectMask2D>();
+                }
             }
         }
 

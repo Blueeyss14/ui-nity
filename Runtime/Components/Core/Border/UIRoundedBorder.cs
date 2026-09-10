@@ -10,7 +10,7 @@ namespace Uinity
         [SerializeField] private Radius _radius;
         [SerializeField] private float _thickness = 1f;
         public int cornerSegments = 64;
-        public float antiAliasWidth = 1.75f;
+        public float antiAliasWidth = 1f;
         public float innerOverlap = 0.5f;
 
         public Radius radius
