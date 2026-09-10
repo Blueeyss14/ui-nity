@@ -14,6 +14,7 @@ namespace Uinity
         private readonly bool _clip;
         private readonly Padding _padding;
         private readonly Margin _margin;
+        private readonly Opacity _opacity;
 
         public Container(
             Color? color = null,
@@ -24,7 +25,8 @@ namespace Uinity
             Radius radius = default,
             bool clip = false,
             Padding padding = default,
-            Margin margin = default)
+            Margin margin = default,
+            Opacity opacity = default)
         {
             _color = color;
             _width = width;
@@ -35,6 +37,7 @@ namespace Uinity
             _clip = clip;
             _padding = padding;
             _margin = margin;
+            _opacity = opacity;
         }
 
         public override GameObject Build(Transform parent)
@@ -133,9 +136,15 @@ namespace Uinity
 
             if (_color.HasValue)
             {
+                Color finalColor = _color.Value;
+                if (_opacity.HasValue)
+                {
+                    finalColor.a *= Mathf.Clamp01(_opacity.Value);
+                }
+
                 UIContext.AddImage(
                     containerObj,
-                    _color.Value,
+                    finalColor,
                     _radius
                 );
             }
@@ -174,7 +183,9 @@ namespace Uinity
                 }
             }
 
-            return _margin.HasValue ? containerObj.transform.parent.gameObject : containerObj;
+            GameObject finalRoot = _margin.HasValue ? containerObj.transform.parent.gameObject : containerObj;
+
+            return finalRoot;
         }
 
         private void ApplyDefaults(RectTransform rect)

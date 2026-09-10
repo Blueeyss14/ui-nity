@@ -6,6 +6,7 @@ public static class Template
     public static UIElement Build()
     {
         return new Container(
+            opacity: 0.5,
             alignment: Alignment.center,
             color: Color.red,
             width: Width.full,
