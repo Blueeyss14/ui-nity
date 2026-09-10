@@ -62,21 +62,29 @@ public static class Template
             ),
              new Container(
                 radius: new SetRadiusX(0, 20),
-                                    color: Color.yellow,
-                                    width: 200,
-                                    height: 100
-                                ),
+                color: Color.yellow,
+                width: 200,
+                height: 100
+            ),
              new Container(
                 radius: new SetRadiusY(30, 0),
-                                    color: Color.blue,
-                                    width: 200,
-                                    height: 100
+                color: Color.blue,
+                width: 200,
+                                    height: 100,
+                                    border: new Border(
+                                    thickness: 10f,
+                                    color: Color.black
+                                )
                                 ),
              new Container(
                 radius: new Radius(Radius.full),
                                     color: Color.blue,
                                     width: 100,
-                                    height: 100
+                                    height: 100,
+                                    border: new Border(
+        thickness: 10f,
+        color: Color.black
+    )
                                 ),
              new Container(
                 radius: new Radius(20),

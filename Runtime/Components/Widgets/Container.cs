@@ -15,6 +15,7 @@ namespace Uinity
         private readonly Padding _padding;
         private readonly Margin _margin;
         private readonly Opacity _opacity;
+        private readonly Border _border;
 
         public Container(
             Color? color = null,
@@ -26,7 +27,8 @@ namespace Uinity
             bool clip = false,
             Padding padding = default,
             Margin margin = default,
-            Opacity opacity = default)
+            Opacity opacity = default,
+            Border border = default)
         {
             _color = color;
             _width = width;
@@ -38,6 +40,7 @@ namespace Uinity
             _padding = padding;
             _margin = margin;
             _opacity = opacity;
+            _border = border;
         }
 
         public override GameObject Build(Transform parent)
@@ -46,7 +49,24 @@ namespace Uinity
             RectTransform containerRect;
             LayoutElement layoutElement;
 
-            if (_margin.HasValue)
+            bool hasMargin = _margin.HasValue;
+            bool hasBorder = _border.HasValue && _border.Thickness > 0f;
+            float b = hasBorder ? _border.Thickness : 0f;
+
+            float marginLeft = hasMargin ? _margin.Left : 0f;
+            float marginRight = hasMargin ? _margin.Right : 0f;
+            float marginTop = hasMargin ? _margin.Top : 0f;
+            float marginBottom = hasMargin ? _margin.Bottom : 0f;
+
+            float extraLeft = marginLeft + b;
+            float extraRight = marginRight + b;
+            float extraTop = marginTop + b;
+            float extraBottom = marginBottom + b;
+
+            float totalExtraX = extraLeft + extraRight;
+            float totalExtraY = extraTop + extraBottom;
+
+            if (hasMargin || hasBorder)
             {
                 GameObject marginObj = UIContext.CreateObject(
                     "ContainerMargin",
@@ -57,9 +77,6 @@ namespace Uinity
 
                 layoutElement = marginObj.AddComponent<LayoutElement>();
 
-                float totalMarginX = _margin.Left + _margin.Right;
-                float totalMarginY = _margin.Top + _margin.Bottom;
-
                 if (_width.IsFull)
                 {
                     ApplyWidth(marginRect);
@@ -67,9 +84,9 @@ namespace Uinity
                 }
                 else if (_width.Value > 0)
                 {
-                    ApplyWidth(marginRect, totalMarginX);
-                    layoutElement.preferredWidth = _width.Value + totalMarginX;
-                    layoutElement.minWidth = _width.Value + totalMarginX;
+                    ApplyWidth(marginRect, totalExtraX);
+                    layoutElement.preferredWidth = _width.Value + totalExtraX;
+                    layoutElement.minWidth = _width.Value + totalExtraX;
                     layoutElement.flexibleWidth = 0f;
                 }
 
@@ -80,9 +97,9 @@ namespace Uinity
                 }
                 else if (_height.Value > 0)
                 {
-                    ApplyHeight(marginRect, totalMarginY);
-                    layoutElement.preferredHeight = _height.Value + totalMarginY;
-                    layoutElement.minHeight = _height.Value + totalMarginY;
+                    ApplyHeight(marginRect, totalExtraY);
+                    layoutElement.preferredHeight = _height.Value + totalExtraY;
+                    layoutElement.minHeight = _height.Value + totalExtraY;
                     layoutElement.flexibleHeight = 0f;
                 }
 
@@ -93,8 +110,8 @@ namespace Uinity
                 containerRect = UIContext.GetRect(containerObj);
                 containerRect.anchorMin = Vector2.zero;
                 containerRect.anchorMax = Vector2.one;
-                containerRect.offsetMin = new Vector2(_margin.Left, _margin.Bottom);
-                containerRect.offsetMax = new Vector2(-_margin.Right, -_margin.Top);
+                containerRect.offsetMin = new Vector2(extraLeft, extraBottom);
+                containerRect.offsetMax = new Vector2(-extraRight, -extraTop);
             }
             else
             {
@@ -158,6 +175,15 @@ namespace Uinity
                 );
             }
 
+            if (_border.HasValue && _border.Thickness > 0f)
+            {
+                UIContext.AddBorder(
+                    containerObj,
+                    _border,
+                    _radius
+                );
+            }
+
             if (_child != null)
             {
                 GameObject child =
@@ -178,12 +204,13 @@ namespace Uinity
                     autoSize.autoHeight = isAutoHeight;
                     autoSize.padding = _padding;
                     autoSize.margin = _margin;
-                    autoSize.marginObj = _margin.HasValue ? containerObj.transform.parent.gameObject : null;
+                    autoSize.border = _border;
+                    autoSize.marginObj = (hasMargin || hasBorder) ? containerObj.transform.parent.gameObject : null;
                     autoSize.UpdateSize();
                 }
             }
 
-            GameObject finalRoot = _margin.HasValue ? containerObj.transform.parent.gameObject : containerObj;
+            GameObject finalRoot = (hasMargin || hasBorder) ? containerObj.transform.parent.gameObject : containerObj;
 
             return finalRoot;
         }

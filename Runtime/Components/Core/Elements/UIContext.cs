@@ -185,5 +185,30 @@ namespace Uinity
                 obj.AddComponent<RectMask2D>();
             }
         }
+
+        public static void AddBorder(
+            GameObject obj,
+            Border border,
+            Radius radius = default)
+        {
+            if (!border.HasValue || border.Thickness <= 0f) return;
+
+            GameObject borderObj = CreateObject("Border", obj.transform);
+            RectTransform borderRect = GetRect(borderObj);
+            borderRect.anchorMin = Vector2.zero;
+            borderRect.anchorMax = Vector2.one;
+            borderRect.offsetMin = Vector2.zero;
+            borderRect.offsetMax = Vector2.zero;
+
+            LayoutElement le = borderObj.AddComponent<LayoutElement>();
+            le.ignoreLayout = true;
+
+            UIRoundedBorder graphic = borderObj.AddComponent<UIRoundedBorder>();
+            graphic.color = border.Color;
+            graphic.radius = radius;
+            graphic.thickness = border.Thickness;
+            graphic.raycastTarget = false;
+            graphic.maskable = false;
+        }
     }
 }
