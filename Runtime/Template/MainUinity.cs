@@ -1,7 +1,7 @@
 using UnityEngine;
 using Uinity;
 
-public class MainScreen : UinityScreen
+public class MainUinity : UinityScreen
 {
     public override UIElement Build()
     {
