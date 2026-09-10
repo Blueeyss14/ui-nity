@@ -1,0 +1,17 @@
+{
+  "name": "com.blueeyss14.uinity",
+  "version": "1.0.0",
+  "displayName": "Uinity",
+  "description": "Declarative UI Framework for Unity",
+  "unity": "2021.3",
+  "author": {
+    "name": "Blueeyss14",
+    "url": "https://github.com/Blueeyss14/ui-nity"
+  },
+  "keywords": [
+    "ui",
+    "declarative",
+    "uinity",
+    "framework"
+  ]
+}
