@@ -72,8 +72,8 @@ new Container(
 ```bash
 
 new Container(
-    padding: SetPadding(10),
-    margin: SetMargin(10)
+    padding: new SetPadding(10),
+    margin: new SetMargin(10)
 ),
 
 ```
@@ -83,8 +83,8 @@ Define horizontal(X) or vertical(Y):
 ```bash
 
 new Container(
-    padding: SetPaddingX(value),
-    margin: SetMarginY(value)
+    padding: new SetPaddingX(value),
+    margin: new SetMarginY(value)
 ),
 
 ```
@@ -94,8 +94,8 @@ Make it specific
 ```bash
 
 new Container(
-    padding: SetPaddingX(left, right),
-    margin: SetMarginY(top, bottom)
+    padding: new SetPaddingX(left, right),
+    margin: new SetMarginY(top, bottom)
 ),
 
 ```
@@ -105,8 +105,8 @@ Or
 ```bash
 
 new Container(
-    padding: SetPaddingOnly(left: 10, bottom: 2, right: 12, bottom: 20),
-    margin: SetMarginOnly(left: 10, bottom: 2, right: 12, bottom: 20)
+    padding: new SetPaddingOnly(left: 10, bottom: 2, right: 12, bottom: 20),
+    margin: new SetMarginOnly(left: 10, bottom: 2, right: 12, bottom: 20)
 ),
 
 ```
