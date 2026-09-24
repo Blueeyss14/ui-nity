@@ -20,5 +20,93 @@ new Container(
     width: 100,
     height: 100
     child: <child>),
+
 ```
 
+### Container Attributes
+
+```bash
+
+new Container(
+    clip: true,
+    opacity: 0.5,
+    padding: new SetPadding(10),
+    margin: new SetMargin(10),
+    alignment: Alignment.center,
+    width: 100,
+    height: 100,
+    color: Color.blue,
+    border: new Border(
+        thickness: 10f,
+        color: Color.black,    
+    radius: new Radius(Radius.full),
+    )
+    child: <child>)
+
+```
+
+### Container (Size)
+
+Define container size in pixel
+
+```bash
+
+new Container(
+    width: 100,
+    height: 100)
+
+```
+
+Define container screen size
+
+```bash
+
+new Container(
+    width: Width.screen,
+    height: Width.screen / 2)
+
+```
+
+### Container (Padding and Margin)
+
+```bash
+
+new Container(
+    padding: SetPadding(10),
+    margin: SetMargin(10)
+),
+
+```
+
+Define horizontal(X) or vertical(Y):
+
+```bash
+
+new Container(
+    padding: SetPaddingX(value),
+    margin: SetMarginY(value)
+),
+
+```
+
+Make it specific
+
+```bash
+
+new Container(
+    padding: SetPaddingX(left, right),
+    margin: SetMarginY(top, bottom)
+),
+
+```
+
+Or
+
+```bash
+
+new Container(
+    padding: SetPaddingOnly(left: 10, bottom: 2, right: 12, bottom: 20),
+    margin: SetMarginOnly(left: 10, bottom: 2, right: 12, bottom: 20)
+),
+
+```
