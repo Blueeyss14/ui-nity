@@ -105,8 +105,8 @@ Or
 ```bash
 
 new Container(
-    padding: new SetPaddingOnly(left: 10, bottom: 2, right: 12, bottom: 20),
-    margin: new SetMarginOnly(left: 10, bottom: 2, right: 12, bottom: 20)
+    padding: new SetPaddingOnly(left: 10, right: 2, top: 12, bottom: 20),
+    margin: new SetMarginOnly(left: 10, right: 2, top: 12, bottom: 20)
 ),
 
 ```
