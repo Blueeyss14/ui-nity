@@ -8,10 +8,10 @@ namespace Uinity
         public readonly Color Color;
         public readonly bool HasValue;
 
-        public TextBorder(float thickness, Color Color)
+        public TextBorder(float thickness, Color color)
         {
             Thickness = thickness;
-            this.Color = Color;
+            this.Color = color;
             HasValue = true;
         }
 

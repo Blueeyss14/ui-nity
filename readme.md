@@ -155,7 +155,7 @@ new Text(
     weight: FontWeight.bold,
     border: new TextBorder(
         thickness: 2f,
-        Color: Color.black
+        color: Color.black
     )
 )
 ```

@@ -110,10 +110,11 @@ public static class Template
                                     height: 100,
                                     child: new Text("This is a text",
                                     size: 50f,
+                                    color: Color.black,
                                     weight: FontWeight.bold,
                                     border: new TextBorder(
                                         thickness: 2f,
-                                        Color: Color.black
+                                        color: Color.red
                                     )
 
                                     )
