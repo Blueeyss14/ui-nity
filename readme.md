@@ -110,3 +110,35 @@ new Container(
 ),
 
 ```
+
+## Direction (Vertical & Horizontal)
+
+How to use:
+
+```bash
+
+new Vertical(
+    padding: new SetPadding(10),
+    new UIElement[]
+    {
+        new <child>,
+        new <child>,
+        new <child>,
+    }
+)
+
+```
+
+```bash
+
+new Horizontal(
+    padding: new SetPadding(10),
+    new UIElement[]
+    {
+        new <child>,
+        new <child>,
+        new <child>,
+    }
+)
+
+```
