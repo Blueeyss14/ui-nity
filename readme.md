@@ -63,7 +63,7 @@ Define container screen size
 
 new Container(
     width: Width.screen,
-    height: Width.screen / 2)
+    height: Height.screen / 2)
 
 ```
 
@@ -123,7 +123,7 @@ new Vertical(
     {
         new <child>,
         new <child>,
-        new <child>,
+        new <child>
     }
 )
 
@@ -137,7 +137,7 @@ new Horizontal(
     {
         new <child>,
         new <child>,
-        new <child>,
+        new <child>
     }
 )
 
